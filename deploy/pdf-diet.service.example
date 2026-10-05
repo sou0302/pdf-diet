@@ -1,0 +1,22 @@
+# PDF Diet 用 systemd ユニットの例（パス・ユーザー名は環境に合わせて変更）
+# 事前に専用ユーザーを作成:  useradd --system --no-create-home --home-dir /var/lib/pdf-diet --shell /usr/sbin/nologin pdfdiet
+[Unit]
+Description=Streamlit PDF Diet App
+After=network.target
+
+[Service]
+User=pdfdiet
+Group=pdfdiet
+WorkingDirectory=/var/www/pdf-diet
+Environment=HOME=/var/lib/pdf-diet
+ExecStart=/var/www/pdf-diet/venv/bin/streamlit run app.py \
+  --server.port 8501 --server.address 127.0.0.1 \
+  --server.baseUrlPath app --server.maxUploadSize 100
+Restart=always
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectHome=true
+ProtectSystem=full
+
+[Install]
+WantedBy=multi-user.target

@@ -1,5 +1,4 @@
 import json
-import os
 import time
 import streamlit as st
 import streamlit.components.v1 as components
@@ -20,35 +19,6 @@ if "ga_events" not in st.session_state:
 def queue_ga_event(event_name, params):
     """GA4に送るイベントを一旦リストに貯める"""
     st.session_state["ga_events"].append({"name": event_name, "params": params})
-
-# --- 3. 広告コード ---
-# ID はソースに含めず、環境変数（または .streamlit/secrets.toml）から読む。未設定なら広告は出さない。
-def _setting(name: str) -> str:
-    value = os.environ.get(name, "")
-    if not value:
-        try:
-            value = str(st.secrets.get(name, ""))
-        except Exception:
-            value = ""
-    return value.strip()
-
-ADSENSE_CLIENT = _setting("ADSENSE_CLIENT")  # 例: ca-pub-XXXXXXXXXXXXXXXX
-ADSENSE_SLOT = _setting("ADSENSE_SLOT")      # 例: 1234567890
-SOURCE_CODE_URL = _setting("SOURCE_CODE_URL")  # 例: https://github.com/<user>/pdf-diet（AGPL-3.0のソース公開リンク）
-
-adsense_code = f"""
-<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client={ADSENSE_CLIENT}"
-     crossorigin="anonymous"></script>
-<ins class="adsbygoogle"
-     style="display:block"
-     data-ad-client="{ADSENSE_CLIENT}"
-     data-ad-slot="{ADSENSE_SLOT}"
-     data-ad-format="horizontal"
-     data-full-width-responsive="true"></ins>
-<script>
-     (adsbygoogle = window.adsbygoogle || []).push({{}});
-</script>
-""" if ADSENSE_CLIENT and ADSENSE_SLOT else ""
 
 # --- 4. ロジック関数 ---
 def human_bytes(n: int) -> str:
@@ -82,7 +52,7 @@ st.markdown("""<style>
         animation: none !important;
     }
     
-    .main .block-container { padding-top: 2rem !important; padding-bottom: 1rem !important; }
+    .main .block-container { padding-top: 1rem !important; padding-bottom: 1rem !important; }
     h1 { margin-top: -40px !important; margin-bottom: 0px !important; padding-bottom: 10px !important; }
     h3 { margin-top: 10px !important; margin-bottom: 5px !important; }
     .stCaption { margin-bottom: 1rem !important; }
@@ -130,8 +100,6 @@ footer_area = st.container()
 
 # --- 6. ヘッダー＆アップロード (header_area) ---
 with header_area:
-    st.title("PDF Diet", anchor=False)
-    st.caption("重いPDFを各ページ画像化して軽量化し、クリック可能なURLリンク（注釈）を同一座標に再配置します。")
 
     uploaded = st.file_uploader("PDFを選択", type=["pdf"], accept_multiple_files=False)
     
@@ -260,25 +228,10 @@ with result_area:
             with st.expander("自動最適化の試行履歴（詳細）"):
                 st.table(st.session_state["res_attempts"])
 
-# --- 10. フッター・広告・GA通信 (footer_area) ---
-# ※ここは常に画面の「一番下」に追いやられるため、重なりが起きません。
+# --- 10. GA通信 (footer_area) ---
+# タイトル・説明・広告・プライバシーポリシー・ソースコードのリンクは、
+# Streamlit の外（静的HTML: site/）に置いている。ここでは計測イベントの送信だけを行う。
 with footer_area:
-    st.write("---")
-    st.write("")
-    if adsense_code:
-        components.html(adsense_code, height=130)
-    st.write("")
-    
-    if SOURCE_CODE_URL:
-        st.caption(f"ソースコードはこちら: [{SOURCE_CODE_URL}]({SOURCE_CODE_URL})（AGPL-3.0）")
-
-    with st.expander("プライバシーポリシー / 免責事項"):
-        st.caption("""
-        **アクセス解析について** 当サイトでは、GoogleアナリティクスおよびGoogleサーチコンソールを利用して、サイトの利用状況の把握やサービス改善のためにCookie（クッキー）を使用しています。データは匿名で収集されており、個人を特定するものではありません。
-        
-        **免責事項** 当サイトの利用によって生じた損害等について、開発者は一切の責任を負いかねます。
-        """)
-
     # 貯めておいたGAイベントをここで一気に送信！
     if st.session_state["ga_events"]:
         js_code = "<script>\n"

@@ -1,0 +1,38 @@
+# PDF Diet 用 nginx 設定の例（ドメイン・証明書のパスは環境に合わせて変更）
+server {
+    listen 443 ssl;
+    server_name pdf-diet.example.com;
+
+    client_max_body_size 100M;   # .streamlit/config.toml の maxUploadSize と合わせる
+
+    ssl_certificate     /etc/nginx/ssl/cert.pem;
+    ssl_certificate_key /etc/nginx/ssl/key.pem;
+
+    # 静的ページ（build_site.py の出力先）
+    root /var/www/pdf-diet-site;
+    location / {
+        try_files $uri $uri/ =404;
+    }
+
+    # 圧縮アプリ（Streamlit。--server.baseUrlPath app で起動）
+    location /app/ {
+        proxy_pass http://127.0.0.1:8501;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+
+        # Streamlit用のWebSocket設定
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+        proxy_read_timeout 86400;
+    }
+}
+
+# HTTP は HTTPS へ転送
+server {
+    listen 80;
+    server_name pdf-diet.example.com;
+    return 301 https://$host$request_uri;
+}

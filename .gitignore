@@ -18,3 +18,4 @@ tests/*.pdf
 
 # 作業用スクリプト（公開しない）
 tests/
+site/dist/

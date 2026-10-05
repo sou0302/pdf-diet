@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PDF Diet - PDF圧縮/軽量化ツール</title>
+<meta name="description" content="リンクを保持したままPDFを圧縮・軽量化。ブラウザから使える無料ツールで、希望のサイズになるまで自動で調整します。">
+<meta property="og:title" content="PDF Diet - PDF圧縮/軽量化ツール">
+<meta property="og:description" content="希望のサイズになるまで自動で軽量化。URLリンクも保持可能な高機能圧縮ツール。">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://pdf-diet.sou-is.jp">
+<meta name="twitter:card" content="summary">
+<link rel="icon" href="/favicon.png">
+<!--GA:start-->
+<script async src="https://www.googletagmanager.com/gtag/js?id={{GA_ID}}"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', '{{GA_ID}}');
+</script>
+<!--GA:end-->
+<!--AD:start-->
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client={{ADSENSE_CLIENT}}" crossorigin="anonymous"></script>
+<!--AD:end-->
+<link rel="stylesheet" href="/site.css">
+</head>
+<body>
+<header class="wrap">
+  <h1>PDF Diet</h1>
+  <p class="lead">重いPDFを各ページ画像化して軽量化し、クリック可能なURLリンク（注釈）を同一座標に再配置します。</p>
+</header>
+
+<main class="wrap">
+  <iframe id="app" class="app" src="/app/?embed=true" title="PDF Diet 圧縮ツール" scrolling="no"></iframe>
+
+  <!--AD:start-->
+  <div class="ad">
+    <ins class="adsbygoogle" style="display:block"
+         data-ad-client="{{ADSENSE_CLIENT}}" data-ad-slot="{{ADSENSE_SLOT}}"
+         data-ad-format="horizontal" data-full-width-responsive="true"></ins>
+    <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+  </div>
+  <!--AD:end-->
+
+</main>
+
+<footer class="wrap foot">
+  <details>
+    <summary>プライバシーポリシー / 免責事項</summary>
+    <div class="body">
+      <p><strong>アクセス解析について</strong> 当サイトでは、GoogleアナリティクスおよびGoogleサーチコンソールを利用して、サイトの利用状況の把握やサービス改善のためにCookie（クッキー）を使用しています。データは匿名で収集されており、個人を特定するものではありません。</p>
+      <p><strong>広告の配信について</strong> 当サイトは、第三者配信の広告サービス「Google AdSense」を利用しています。Google を含む配信事業者は、Cookie を使用して、ユーザーが当サイトや他のサイトに過去にアクセスした際の情報に基づいて広告を配信します。<a href="https://adssettings.google.com/" target="_blank" rel="noopener">広告設定</a>で、パーソナライズ広告を無効にできます。</p>
+      <p><strong>アップロードされたファイルについて</strong> PDFは圧縮のためだけにサーバーのメモリ上で処理し、ディスクには保存しません。</p>
+      <p><strong>免責事項</strong> 当サイトの利用によって生じた損害等について、開発者は一切の責任を負いかねます。</p>
+    </div>
+  </details>
+  <nav class="links">
+    <!--HELP:start--><a href="{{HELP_URL}}" target="_blank" rel="noopener">使い方</a><!--HELP:end-->
+    <!--PRIVACY:start--><a href="{{PRIVACY_URL}}" target="_blank" rel="noopener">プライバシーポリシー</a><!--PRIVACY:end-->
+    <!--CONTACT:start--><a href="{{CONTACT_URL}}" target="_blank" rel="noopener">お問い合わせ</a><!--CONTACT:end-->
+    <!--SRC:start--><a href="{{SOURCE_CODE_URL}}" target="_blank" rel="noopener">ソースコード</a><!--SRC:end-->
+  </nav>
+</footer>
+
+<script>
+// 埋め込んだアプリの高さを、中身に合わせて自動調整する（同一ドメインなので参照できる）
+(function () {
+  var f = document.getElementById('app');
+  function fit() {
+    try {
+      if (!f.offsetWidth) return;  // 非表示(幅0)のときは測らない
+      var d = f.contentDocument;
+      var c = d && d.querySelector('[data-testid="stMainBlockContainer"]');
+      if (!c) return;
+      var h = Math.ceil(c.getBoundingClientRect().height) + 16;
+      if (h < 520) h = 520;
+      if (Math.abs(f.offsetHeight - h) > 2) f.style.height = h + 'px';
+    } catch (e) {}
+  }
+  setInterval(fit, 300);
+  f.addEventListener('load', fit);
+})();
+</script>
+</body>
+</html>
