@@ -1,0 +1,13 @@
+[server]
+# アップロード上限(MB)。nginx側の client_max_body_size も同じ値にすること
+maxUploadSize = 100
+
+[theme]
+# システムやブラウザの設定を無視して、常にダークモードを基準にします
+base="dark"
+
+# サイトのアクセントカラー（ボタンなどの色）をお好みに合わせる場合
+primaryColor="#ff4b4b"
+backgroundColor="#0e1117"
+secondaryBackgroundColor="#262730"
+textColor="#fafafa"

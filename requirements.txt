@@ -1,3 +1,2 @@
-pymupdf
-streamlit
-
+pymupdf>=1.27
+streamlit>=1.37

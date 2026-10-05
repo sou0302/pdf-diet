@@ -1,0 +1,20 @@
+# 仮想環境・キャッシュ
+.venv/
+venv/
+__pycache__/
+*.pyc
+
+# 秘密情報（万一置いた場合に備えて）
+.env
+*.pem
+*.key
+.streamlit/secrets.toml
+
+# ローカル作業用（公開しない）
+server_copy/
+index.html
+static/
+tests/*.pdf
+
+# 作業用スクリプト（公開しない）
+tests/
